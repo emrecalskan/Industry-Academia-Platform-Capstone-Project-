@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InConnect | Akademi ve Endüstri İşbirliği Platformu</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- AUTH / LOGIN (Arkadaşının tasarımı entegre edildi) -->
+  <section id="auth" class="auth auth--login" aria-label="Giriş ekranı">
+    <main class="login-screen">
+      <section class="login-card" aria-label="Giriş Formu">
+        <h1 class="login-logo" aria-label="inConnect">
+          <span class="login-in">in</span><span class="login-connect">Connect</span>
+        </h1>
+
+        <form id="loginForm" class="login-form" autocomplete="on">
+          <label class="login-field">
+            <span class="login-icon user" aria-hidden="true"></span>
+            <input id="loginName" type="text" placeholder="Kullanıcı Adı" />
+          </label>
+
+          <label class="login-field">
+            <span class="login-icon lock" aria-hidden="true"></span>
+            <input id="loginPass" type="password" placeholder="Şifre" />
+          </label>
+
+          <!-- Demo: Script’in beklediği alanlar (gizli) -->
+          <input id="loginEmail" type="hidden" value="demo@inconnect.local" />
+          <input id="loginRole" type="hidden" value="Öğrenci" />
+
+          <a class="login-forgot" href="#"
+             onclick="showToast('Demo arayüz: Şifre sıfırlama kapalı.', 'info'); return false;">
+            Şifremi Unuttum?
+          </a>
+
+          <button class="btn btn--primary w-100" type="submit">Giriş Yap</button>
+
+          <p class="login-bottom">
+            Hesabınız yok mu?
+            <a class="login-signup" href="#"
+               onclick="showToast('Demo arayüz: Kayıt ol kapalı.', 'info'); return false;">
+              Kayıt Ol
+            </a>
+          </p>
+
+          <div class="auth__hint muted">
+            Demo: Herhangi bir bilgiyle giriş yapabilirsin. (Yerel depolama ile oturum simülasyonu)
+          </div>
+        </form>
+      </section>
+    </main>
+  </section>
+
+  <!-- APP SHELL (ANA TASARIM - BOZULMADI) -->
+  <div id="appShell">
+    <header class="topbar">
+      <div class="topbar__inner container">
+        <a href="#akis" class="brand" role="banner">
+          <div class="brand__logo">in</div>
+          <div class="brand__text">
+            <div class="brand__name">Connect</div>
+            <div class="brand__sub">Kariyer Köprüsü</div>
+          </div>
+        </a>
+
+        <nav class="nav" aria-label="Ana gezinme">
+          <a class="nav__item is-active" href="#akis" data-page="akis">
+            <span class="nav__icon">🏠</span>
+            <span class="nav__label">Akış</span>
+          </a>
+          <a class="nav__item" href="#projeler" data-page="projeler">
+            <span class="nav__icon">🚀</span>
+            <span class="nav__label">Projeler</span>
+          </a>
+          <a class="nav__item" href="#siralama" data-page="siralama">
+            <span class="nav__icon">🏆</span>
+            <span class="nav__label">Sıralama</span>
+          </a>
+        </nav>
+
+        <div class="top-actions">
+          <button class="icon-btn" type="button" aria-label="Bildirimler" onclick="showToast('Yeni bildiriminiz yok.')">
+            🔔
+            <span class="icon-dot"></span>
+          </button>
+
+          <div class="profile-wrapper">
+            <button class="profile" id="profileBtn" type="button" aria-haspopup="menu" aria-expanded="false">
+              <div class="profile__info">
+                <span class="profile__name">Emirhan Y.</span>
+                <span class="profile__role">Öğrenci</span>
+              </div>
+              <div class="avatar avatar--sm"></div>
+            </button>
+
+            <div class="profile-menu card is-hidden" id="profileMenu" role="menu">
+              <button class="profile-menu__item" type="button" data-action="openProfile">👤 Profili Görüntüle</button>
+              <button class="profile-menu__item" type="button" data-action="openSettings">⚙️ Profili Düzenle</button>
+              <div class="profile-menu__divider"></div>
+              <button class="profile-menu__item danger" type="button" data-action="logout">🚪 Çıkış Yap</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container layout">
+      <!-- LEFT -->
+      <aside class="left">
+        <section class="card profile-card">
+          <div class="profile-card__cover"></div>
+          <div class="profile-card__body">
+            <div class="avatar profile-card__avatar"></div>
+            <div class="profile-card__name">Emirhan Yılmaz</div>
+            <div class="profile-card__meta muted">Yazılım Mühendisliği • 4. Sınıf</div>
+
+            <div class="stats-row">
+              <div class="stat">
+                <div class="stat__val" id="statXP">1240</div>
+                <div class="stat__label">XP</div>
+              </div>
+              <div class="stat">
+                <div class="stat__val" id="statProjects">12</div>
+                <div class="stat__label">Projeler</div>
+              </div>
+            </div>
+
+            <button class="btn btn--ghost w-100" id="editProfileBtn" type="button">Profili Düzenle</button>
+          </div>
+        </section>
+
+        <section class="card menu-card">
+          <a class="menu-item is-active" href="#akis" data-subpage="active">
+            <span>🧩</span> Aktif Projeler
+            <span class="menu-item__badge">2</span>
+          </a>
+          <a class="menu-item" href="#akis/tamamlananlar" data-subpage="done">
+            <span>✅</span> Tamamlananlar
+            <span class="menu-item__badge">7</span>
+          </a>
+          <a class="menu-item" href="#akis/rapor" data-subpage="report">
+            <span>📊</span> Başarı Raporum
+          </a>
+        </section>
+      </aside>
+
+      <!-- CENTER -->
+      <section class="center">
+        <section id="page-akis" class="page">
+          <section class="card hero">
+            <div class="hero__overlay"></div>
+            <div class="hero__content">
+              <h1>Akademi – Endüstri işbirliğinde gerçek projeler</h1>
+              <p>Yeni proje çağrılarını takip et, çözümünü gönder, XP kazan ve sıralamada yüksel.</p>
+              <div class="hero__actions">
+                <button class="btn btn--primary" data-open-project="p1" data-start="1">🚀 Hemen Başla</button>
+                <button class="btn btn--ghost" onclick="showToast('Demo: Mentor eşleştirme yakında!', 'info')">🤝 Mentor Bul</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- SUBPAGES -->
+          <section id="subpage-active" class="subpage">
+            <section class="card feed">
+              <div class="feed__head">
+                <div class="feed__title">Güncel Proje Akışı</div>
+                <div class="tabs" id="feedTabs">
+                  <button class="tab is-active" data-filter="all" type="button">Hepsi</button>
+                  <button class="tab" data-filter="yazilim" type="button">Yazılım</button>
+                  <button class="tab" data-filter="veri" type="button">Veri</button>
+                  <button class="tab" data-filter="tasarim" type="button">Tasarım</button>
+                </div>
+              </div>
+
+              <article class="post" data-category="yazilim" data-project-id="p1">
+                <div class="post__top">
+                  <div class="company-logo">KL</div>
+                  <div class="post__meta">
+                    <div class="post__name">KLS Teknoloji A.Ş. <span class="badge badge--green">Aktif</span></div>
+                    <div class="post__subtitle muted">Son Teslim: 15 Ocak 2026 • Zorluk: Orta</div>
+                  </div>
+                  <div class="score-badge">500 XP</div>
+                </div>
+                <h3 class="post__title">Stok Takip Modülü API Geliştirmesi</h3>
+                <p class="post__text">Node.js + Express + PostgreSQL ile JWT doğrulamalı RESTful stok düşüm servisi geliştir.</p>
+                <div class="tag-row">
+                  <span class="pill">Backend</span>
+                  <span class="pill">Node.js</span>
+                  <span class="pill">PostgreSQL</span>
+                </div>
+
+                <div class="code-snippet">
+                  <div class="code-header">Teknik Gereksinimler:</div>
+                  <code>- Stack: Node.js, Express, PostgreSQL<br>- Auth: JWT Token<br>- Çıktı: JSON Stok Durumu</code>
+                </div>
+
+                <div class="post__actions">
+                  <button class="btn btn--primary js-start-solution"><span class="btn__icon">▶</span> Çözüme Başla</button>
+                  <button class="btn btn--ghost js-open-details">Detaylar</button>
+                </div>
+                <div class="post__footer muted">
+                  <span>👨‍🏫 Danışman: Dr. Öğr. Üyesi Beste Kaysı</span>
+                </div>
+              </article>
+
+              <div class="divider"></div>
+
+              <article class="post" data-category="yazilim" data-project-id="p2">
+                <div class="post__top">
+                  <div class="company-logo cl-2">XY</div>
+                  <div class="post__meta">
+                    <div class="post__name">XYZ Yazılım <span class="badge badge--blue">Yeni</span></div>
+                    <div class="post__subtitle muted">Son Teslim: 20 Ocak 2026 • Zorluk: Kolay</div>
+                  </div>
+                  <div class="score-badge">250 XP</div>
+                </div>
+                <h3 class="post__title">React Dashboard Arayüz Tasarımı</h3>
+                <p class="post__text">Admin panelimiz için responsive, dark-mode destekli bir dashboard bileşeni geliştirilecek.</p>
+                <div class="tag-row">
+                  <span class="pill">Frontend</span>
+                  <span class="pill">React</span>
+                  <span class="pill">UI/UX</span>
+                </div>
+                <div class="post__actions">
+                  <button class="btn btn--primary js-start-solution"><span class="btn__icon">💻</span> Kod Gönder</button>
+                  <button class="btn btn--ghost js-download-files">Dosyaları İndir</button>
+                </div>
+                <div class="post__footer muted">
+                  <span>👨‍🏫 Danışman: Prof. Dr. Ahmet Yılmaz</span>
+                </div>
+              </article>
+            </section>
+          </section>
+
+          <section id="subpage-done" class="subpage is-hidden">
+            <section class="card page-head">
+              <div class="page-head__left">
+                <div class="page-title">Tamamlananlar</div>
+                <div class="page-sub muted">Teslim ettiğin ve onaylanan projeler.</div>
+              </div>
+              <div class="page-head__right">
+                <div class="input">
+                  <span class="input__icon">🔎</span>
+                  <input id="doneSearch" type="text" placeholder="Proje ara." />
+                </div>
+              </div>
+            </section>
+
+            <section class="card feed">
+              <div class="feed__head">
+                <div class="feed__title">Proje Geçmişi</div>
+              </div>
+              <div id="doneList"></div>
+            </section>
+          </section>
+
+          <section id="subpage-report" class="subpage is-hidden">
+            <section class="card page-head">
+              <div class="page-head__left">
+                <div class="page-title">Başarı Raporum</div>
+                <div class="page-sub muted">Genel performans, yetenek dağılımı ve aktiviteler.</div>
+              </div>
+              <div class="page-head__right">
+                <button class="btn btn--primary" id="downloadReportBtn" type="button">📄 Raporu İndir</button>
+              </div>
+            </section>
+
+            <section class="report-grid">
+              <section class="card report-card">
+                <div class="card__title">Özet</div>
+                <div class="kv">
+                  <div class="kv__item">
+                    <span class="muted">Toplam XP</span>
+                    <strong id="repXP">1240</strong>
+                  </div>
+                  <div class="kv__item">
+                    <span class="muted">Tamamlanan</span>
+                    <strong id="repDoneCount">7</strong>
+                  </div>
+                  <div class="kv__item">
+                    <span class="muted">Aktif</span>
+                    <strong id="repActiveCount">2</strong>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card report-card">
+                <div class="card__title">Yetenek Dağılımı</div>
+                <div class="barlist" id="barList"></div>
+              </section>
+
+              <section class="card report-card">
+                <div class="card__title">Son Aktiviteler</div>
+                <div class="timeline" id="recentTimeline"></div>
+              </section>
+            </section>
+          </section>
+        </section>
+
+        <section id="page-projeler" class="page is-hidden">
+          <section class="card page-head">
+            <div class="page-head__left">
+              <div class="page-title">Proje Havuzu</div>
+              <div class="page-sub muted">Sektörden gelen tüm açık çağrılar.</div>
+            </div>
+            <div class="page-head__right">
+              <div class="input">
+                <span class="input__icon">🔎</span>
+                <input id="projectSearch" type="text" placeholder="Teknoloji veya firma ara." />
+              </div>
+              <select id="projectCategory" class="select">
+                <option value="all">Tüm Kategoriler</option>
+                <option value="yazilim">Yazılım Geliştirme</option>
+                <option value="veri">Veri Bilimi</option>
+                <option value="tasarim">Tasarım / UI</option>
+              </select>
+            </div>
+          </section>
+          <section class="projects-grid" id="projectsGrid"></section>
+        </section>
+
+        <section id="page-siralama" class="page is-hidden">
+          <section class="card page-head">
+            <div class="page-head__left">
+              <div class="page-title">Liderlik Tablosu</div>
+              <div class="page-sub muted">En yüksek puana sahip öğrenciler.</div>
+            </div>
+            <div class="input">
+              <span class="input__icon">🔎</span>
+              <input id="rankSearch" type="text" placeholder="Öğrenci ara." />
+            </div>
+          </section>
+
+          <section class="card ranking-card">
+            <div class="ranking-head">
+              <div class="ranking-head__title">Sıralama (2025-2026 Güz)</div>
+            </div>
+
+            <div class="table" role="table">
+              <div class="trow thead">
+                <div class="tcell">#</div>
+                <div class="tcell">Öğrenci</div>
+                <div class="tcell">Bölüm</div>
+                <div class="tcell tcell--right">Toplam XP</div>
+              </div>
+              <div id="rankingBody"></div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="right">
+        <section class="card widget">
+          <div class="card__title">Partner Firmalar</div>
+          <div class="company-list">
+            <div class="c-item js-company-click">
+              <div class="c-logo">KL</div>
+              <div>
+                <div class="c-name">KLS Teknoloji</div>
+                <div class="c-sect">Yazılım Çözümleri</div>
+              </div>
+            </div>
+            <div class="c-item js-company-click">
+              <div class="c-logo cl-2">XY</div>
+              <div>
+                <div class="c-name">XYZ Yazılım</div>
+                <div class="c-sect">Frontend / UI</div>
+              </div>
+            </div>
+            <div class="c-item js-company-click">
+              <div class="c-logo cl-3">DN</div>
+              <div>
+                <div class="c-name">DataNova</div>
+                <div class="c-sect">Veri Bilimi</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card widget">
+          <div class="card__title">Duyurular</div>
+          <div class="ann">
+            <div class="ann__item" onclick="showToast('Yeni dönem proje çağrıları yayınlandı!', 'success')">
+              <div class="ann__icon">📣</div>
+              <div>
+                <div class="ann__title">Yeni dönem proje çağrıları aktif!</div>
+                <div class="ann__meta muted">Bugün • Sistem</div>
+              </div>
+            </div>
+            <div class="ann__item" onclick="showToast('Mentor görüşmesi için takvim açıldı.', 'info')">
+              <div class="ann__icon">🗓️</div>
+              <div>
+                <div class="ann__title">Danışman görüşmeleri için randevu</div>
+                <div class="ann__meta muted">Dün • Üniversite</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <!-- OVERLAY -->
+    <div id="overlay" class="overlay is-hidden" data-close="modal"></div>
+
+    <!-- PROJECT MODAL -->
+    <section class="modal card is-hidden" id="projectModal" role="dialog" aria-modal="true">
+      <div class="modal__head">
+        <div>
+          <div class="modal__title" id="pmTitle">Proje Başlığı</div>
+          <div class="modal__sub muted" id="pmCompany">Firma • Son teslim</div>
+        </div>
+        <button class="icon-x" type="button" data-close="modal">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="pm-kv">
+          <div class="pm-kv__item"><span class="muted">Zorluk</span><strong id="pmLevel">—</strong></div>
+          <div class="pm-kv__item"><span class="muted">Durum</span><strong id="pmStatus">—</strong></div>
+          <div class="pm-kv__item"><span class="muted">Puan</span><strong id="pmPoints">—</strong></div>
+        </div>
+
+        <div class="pm-desc" id="pmDesc">—</div>
+
+        <div class="pm-tags" id="pmTags"></div>
+
+        <div class="pm-upload">
+          <div class="pm-upload__title">Çözümünü Yükle</div>
+          <div class="pm-upload__sub muted" id="pmReq">—</div>
+          <input id="pmFile" class="file" type="file" />
+          <button class="btn btn--primary w-100 mt-2" id="pmSubmitBtn" type="button">Yükle ve Gönder</button>
+          <div class="muted mt-2" id="pmSubmitStatus"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE MODAL -->
+    <section class="modal card is-hidden" id="profileModal" role="dialog" aria-modal="true">
+      <div class="modal__head">
+        <div>
+          <div class="modal__title">Profil Kartı</div>
+          <div class="modal__sub muted">Öğrenci Bilgileri</div>
+        </div>
+        <button class="icon-x" type="button" data-close="modal">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="profile-modal">
+          <div class="profile-modal__top">
+            <div class="avatar avatar--md"></div>
+            <div>
+              <div class="pm-name">Emirhan Yılmaz</div>
+              <div class="pm-meta muted">Yazılım Müh. • 4. Sınıf</div>
+              <div class="pm-badges">
+                <span class="pm-badge" id="pmBadgePoints">1,240 XP</span>
+                <span class="pm-badge" id="pmBadgeProjects">12 Proje</span>
+              </div>
+            </div>
+          </div>
+          <div class="pm-grid">
+            <div class="pm-box">
+              <div class="pm-box__t">Aktif</div>
+              <div class="pm-box__v" id="pmActiveCount">2</div>
+            </div>
+            <div class="pm-box">
+              <div class="pm-box__t">Tamamlanan</div>
+              <div class="pm-box__v" id="pmDoneCount">7</div>
+            </div>
+            <div class="pm-box">
+              <div class="pm-box__t">Sıralama</div>
+              <div class="pm-box__v" id="pmRank">#4</div>
+            </div>
+          </div>
+          <div class="pm-note muted">
+            Profil kartı, proje başvurularında firmalara görünür. (Demo)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDIT PROFILE MODAL -->
+    <section class="modal card is-hidden" id="editProfileModal" role="dialog" aria-modal="true">
+      <div class="modal__head">
+        <div>
+          <div class="modal__title">Profili Düzenle</div>
+          <div class="modal__sub muted">Bilgilerini güncelle</div>
+        </div>
+        <button class="icon-x" type="button" data-close="modal">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="form-grid">
+          <label class="field">
+            <span class="field__label">Ad Soyad</span>
+            <input class="field__input" id="epName" type="text" value="Emirhan Yılmaz" />
+          </label>
+          <label class="field">
+            <span class="field__label">Rol / Ünvan</span>
+            <input class="field__input" id="epRole" type="text" value="Öğrenci" />
+          </label>
+          <label class="field">
+            <span class="field__label">Bölüm</span>
+            <input class="field__input" id="epDept" type="text" value="Yazılım Mühendisliği" />
+          </label>
+          <label class="field">
+            <span class="field__label">Üniversite</span>
+            <input class="field__input" id="epUni" type="text" value="Kırklareli Üniversitesi" />
+          </label>
+          <label class="field field--full">
+            <span class="field__label">Hakkımda</span>
+            <textarea class="field__input field__textarea" id="epBio" rows="4">Projelerde aktif rol alıyorum ve backend tarafında Node.js ile ilgileniyorum.</textarea>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn--primary" id="epSaveBtn" type="button">Değişiklikleri Kaydet</button>
+          <button class="btn btn--ghost" type="button" data-close="modal">Vazgeç</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
