@@ -1,2 +1,2 @@
-# Industry-Academia-Platform-Capstone-Project-
-A role-based web platform connecting students, companies &amp; universities for real-world project collaboration. Built with React, Node.js/Express, MySQL | JWT Auth | RESTful API | RBAC | Agile/Scrum
+# Industry-Academia-Platform (Capstone-Project)
+Developed a role-based web platform connecting students, companies, and universities for real-world project collaboration. Built with React, Node.js/Express, and MySQL, featuring JWT authentication and RESTful API architecture. RBAC across four user panels, a gamified XP/scoring system, and academic reporting modules are being implemented following Agile/Scrum methodology.
